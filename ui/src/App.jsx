@@ -1,11 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PersonForm from './components/PersonForm';
 import PersonList from "./components/PersonList";
 import Notification from './components/Notification';
+import axios from "axios";
 
 function App() {
   const [people, setPeople] = useState([]);
   const [notification, setNotification] = useState(null);
+
+  useEffect(() => {
+    axios.get("https://localhost:7069/api/person").then((response) => {
+      setPeople(response.data)
+    })
+  }, [])
+  
 
   // Función para mostrar notificaciones
   const showNotification = (type, message) => {

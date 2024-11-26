@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import axios from "axios";
+import { useState } from "react";
 
 function PersonForm({ onAddPerson, showNotification }) {
   const [formData, setFormData] = useState({
@@ -17,9 +18,14 @@ function PersonForm({ onAddPerson, showNotification }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    onAddPerson(formData);
-    setFormData({nombre: "", apellidoPaterno: "", apellidoMaterno: "", telefono: "", email: ""})
-    showNotification("success", "Perosna registrada correctamente.");
+    axios.post("https://localhost:7069/api/person", formData).then(() => {
+      onAddPerson(formData);
+      setFormData({ nombre: "", apellidoPaterno: "", apellidoMaterno: "", telefono: "", email: "" })
+      showNotification("success", "Persona registrada correctamente.");
+    }).catch((error) => {
+      console.error("Error:", error);
+      showNotification("error", "No se pudo registrar a la persona.");
+    });
   };
 
   return (
