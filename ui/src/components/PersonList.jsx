@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import LoanModal from "./LoanModal";
 import PaymentsModal from "./PaymentsModal";
 
@@ -36,17 +36,10 @@ function PersonList({ people, setPeople, onDeletePerson, showNotification }) {
     setPeople((prevPeople) =>
       prevPeople.map((person) =>
         person.id === loanData.personId
-          ? { ...person, loan: loanData } // Actualiza o agrega el préstamo
+          ? { ...person, loans: [...person.loans, loanData] } // Actualiza o agrega el préstamo
           : person
       )
     );
-    showNotification(
-      "success",
-      initialLoan
-        ? "Préstamo actualizado correctamente"
-        : "Préstamo registrado correctamente."
-    );
-    setIsLoanModalOpen(false);
   };
 
   const handleAddPayment = (payment) => {
@@ -106,11 +99,10 @@ function PersonList({ people, setPeople, onDeletePerson, showNotification }) {
 
                   {/* Botón para editar préstamo */}
                   <button
-                    className={`px-2 py-1 rounded-md text-white ${
-                      person.loan
-                        ? "bg-yellow-500 hover:bg-yellow-600"
-                        : "bg-gray-400 cursor-not-allowed"
-                    }`}
+                    className={`px-2 py-1 rounded-md text-white ${person.loan
+                      ? "bg-yellow-500 hover:bg-yellow-600"
+                      : "bg-gray-400 cursor-not-allowed"
+                      }`}
                     onClick={() => person.loan && handleEditLoan(person)}
                     disabled={!person.loan}
                   >
@@ -119,11 +111,10 @@ function PersonList({ people, setPeople, onDeletePerson, showNotification }) {
 
                   {/* Botón para ver lista de pagos */}
                   <button
-                    className={`px-2 py-1 rounded-md text-white ${
-                      person.loan
-                        ? "bg-green-500 hover:bg-green-600"
-                        : "bg-gray-400 cursor-not-allowed"
-                    }`}
+                    className={`px-2 py-1 rounded-md text-white ${person.loan
+                      ? "bg-green-500 hover:bg-green-600"
+                      : "bg-gray-400 cursor-not-allowed"
+                      }`}
                     onClick={() => person.loan && handleViewPayments(person)}
                     disabled={!person.loan}
                   >
@@ -145,12 +136,13 @@ function PersonList({ people, setPeople, onDeletePerson, showNotification }) {
       )}
 
       {/* Modal para Agregar/Editar Préstamos */}
-      {isLoanModalOpen && (
+      {isLoanModalOpen && selectedPerson && (
         <LoanModal
           person={selectedPerson}
           initialLoan={initialLoan}
           onClose={() => setIsLoanModalOpen(false)}
           onSubmit={handleSubmitLoan}
+          showNotification={showNotification}
         />
       )}
 

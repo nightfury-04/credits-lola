@@ -1,13 +1,18 @@
-import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useState, useEffect } from "react";
 
-function LoanModal({ person, onClose, onSubmit, initialLoan }) {
+function LoanModal({ person, onClose, onSubmit, initialLoan, showNotification }) {
   const [loanData, setLoanData] = useState({
-    cantidad: "",
-    fecha: "",
-    dia: "",
-    meses: "",
+    person,
+    cantidadPrestada: "",
+    fechaPrestamo: "",
+    diaCobro: "",
+    mesesDelPrestamo: "",
     intereses: "",
   });
+
+  console.log(loanData.person);
+
 
   // Prellenar el formulario si estamos en modo edición
   useEffect(() => {
@@ -21,17 +26,39 @@ function LoanModal({ person, onClose, onSubmit, initialLoan }) {
     setLoanData({ ...loanData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit({ ...loanData, personId: person.id });
-    onClose();
+    axios.post("https://localhost:7069/api/loan", loanData)
+      .then((response) => {
+        onSubmit(response.data);
+        setLoanData({
+          person,
+          cantidadPrestada: "",
+          fechaPrestamo: "",
+          diaCobro: "",
+          mesesDelPrestamo: "",
+          intereses: "",
+        })
+        showNotification("success", "Prestamo creado correctamente.");
+      }).catch((error) => {
+        console.error("Error:", error);
+        showNotification("error", "No se crear el prestamo.");
+      }).finally(() => {
+        onClose();
+      });
   };
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   onSubmit({ ...loanData, personId: person.id });
+  //   onClose();
+  // };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-md shadow-md w-full max-w-lg">
         <h3 className="text-xl font-bold mb-4">
-        {initialLoan ? "Editar Préstamo" : "Agregar Préstamo"} para {person.nombre}
+          {initialLoan ? "Editar Préstamo" : "Agregar Préstamo"} para {person.nombre}
         </h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -40,8 +67,8 @@ function LoanModal({ person, onClose, onSubmit, initialLoan }) {
             </label>
             <input
               type="number"
-              name="cantidad"
-              value={loanData.cantidad}
+              name="cantidadPrestada"
+              value={loanData.cantidadPrestada}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-md"
               required
@@ -53,8 +80,8 @@ function LoanModal({ person, onClose, onSubmit, initialLoan }) {
             </label>
             <input
               type="date"
-              name="fecha"
-              value={loanData.fecha}
+              name="fechaPrestamo"
+              value={loanData.fechaPrestamo}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-md"
               required
@@ -66,8 +93,8 @@ function LoanModal({ person, onClose, onSubmit, initialLoan }) {
             </label>
             <input
               type="number"
-              name="dia"
-              value={loanData.dia}
+              name="diaCobro"
+              value={loanData.diaCobro}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-md"
               required
@@ -79,8 +106,8 @@ function LoanModal({ person, onClose, onSubmit, initialLoan }) {
             </label>
             <input
               type="number"
-              name="meses"
-              value={loanData.meses}
+              name="mesesDelPrestamo"
+              value={loanData.mesesDelPrestamo}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-md"
               required

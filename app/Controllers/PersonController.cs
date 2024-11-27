@@ -1,5 +1,7 @@
 ﻿using app.Data;
+using app.Dtos;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Models;
 
 namespace app.Controllers;
@@ -30,7 +32,30 @@ public class PersonController : ControllerBase
     [HttpGet]
     public IActionResult GetAllPersons()
     {
-        var persons = _context.Persons.ToList();
+        var persons = _context.Persons
+        .Include(p => p.Loans) // Eagerly load Loans
+        .Select(p => new PersonDto
+        {
+            Id = p.Id,
+            CI = p.CI,
+            Nombre = p.Nombre,
+            ApellidoPaterno = p.ApellidoPaterno,
+            ApellidoMaterno = p.ApellidoMaterno,
+            Telefono = p.Telefono,
+            Email = p.Email,
+            Loans = p.Loans.Select(l => new LoanDto
+            {
+                Id = l.Id,
+                CantidadPrestada = l.CantidadPrestada,
+                FechaPrestamo = l.FechaPrestamo,
+                DiaCobro = l.DiaCobro,
+                MesesDelPrestamo = l.MesesDelPrestamo,
+                Intereses = l.Intereses,
+                PersonId = l.PersonId
+            }).ToList()
+        })
+        .ToList();
+
         return Ok(persons);
     }
 

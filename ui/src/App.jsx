@@ -24,8 +24,8 @@ function App() {
 
   // Función para agregar una persona al listado
   const addPerson = (newPerson) => {
-    setPeople([...people, { ...newPerson, id: people.length + 1 }]);
-  };
+    setPeople([...people, { ...newPerson }]);
+  }
 
   // Función para eliminar una persona del listado
   const deletePerson = (personId) => {
