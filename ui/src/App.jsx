@@ -18,7 +18,7 @@ function App() {
   // Función para mostrar notificaciones
   const showNotification = (type, message) => {
     setNotification({ type, message });
-    setTimeout(() => setNotification(null), 3000);
+    setTimeout(() => setNotification(null), 4000);
   }
 
   // Función para agregar una persona al listado

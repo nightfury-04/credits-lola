@@ -1,21 +1,22 @@
 import React, { useState } from "react";
 import LoanModal from "./LoanModal";
+import PaymentsModal from "./PaymentsModal";
 
 function PersonList({ people, setPeople, onDeletePerson, showNotification }) {
   const [selectedPerson, setSelectedPerson] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoanModalOpen, setIsLoanModalOpen] = useState(false);
+  const [isPaymentsModalOpen, setIsPaymentsModalOpen] = useState(false);
   const [initialLoan, setInitialLoan] = useState(null);
 
   const handleAddLoan = (person) => {
     setSelectedPerson(person);
     setInitialLoan(null);
-    setIsModalOpen(true);
+    setIsLoanModalOpen(true);
   };
 
   const handleEditLoan = (person) => {
     setSelectedPerson(person);
     setInitialLoan(person.loan);
-    // alert(`Editar préstamo para la persona: ${person.nombre}`);
     showNotification(
       "info",
       `Editar préstamo para la persona: ${person.nombre}`
@@ -24,6 +25,11 @@ function PersonList({ people, setPeople, onDeletePerson, showNotification }) {
 
   const handleDeleteLoan = (personId) => {
     alert(`Eliminar préstamo para la persona con ID: ${personId}`);
+  };
+
+  const handleViewPayments = (person) => {
+    setSelectedPerson(person);
+    setIsPaymentsModalOpen(true);
   };
 
   const handleSubmitLoan = (loanData) => {
@@ -40,7 +46,24 @@ function PersonList({ people, setPeople, onDeletePerson, showNotification }) {
         ? "Préstamo actualizado correctamente"
         : "Préstamo registrado correctamente."
     );
-    setIsModalOpen(false);
+    setIsLoanModalOpen(false);
+  };
+
+  const handleAddPayment = (payment) => {
+      setPeople((prevPeople) =>
+        prevPeople.map((person) =>
+          person.id === selectedPerson.id
+            ? {
+                ...person,
+                loan: {
+                  ...person.loan,
+                  payments: [...(person.loan?.payments || []), payment],
+                },
+              }
+            : person
+        )
+      );
+      showNotification("success", "Abono registrado correctamente.");
   };
 
   return (
@@ -92,6 +115,19 @@ function PersonList({ people, setPeople, onDeletePerson, showNotification }) {
                     Editar Préstamo
                   </button>
 
+                  {/* Botón para ver lista de pagos */}
+                  <button
+                    className={`px-2 py-1 rounded-md text-white ${
+                      person.loan
+                        ? "bg-green-500 hover:bg-green-600"
+                        : "bg-gray-400 cursor-not-allowed"
+                    }`}
+                    onClick={() => person.loan && handleViewPayments(person)}
+                    disabled={!person.loan}
+                  >
+                    Lista de Pagos
+                  </button>
+
                   {/* Botón para eliminar persona */}
                   <button
                     onClick={() => onDeletePerson(person.id)}
@@ -106,13 +142,22 @@ function PersonList({ people, setPeople, onDeletePerson, showNotification }) {
         </table>
       )}
 
-      {/* Modal para registro de préstamo */}
-      {isModalOpen && (
+      {/* Modal para Agregar/Editar Préstamos */}
+      {isLoanModalOpen && (
         <LoanModal
           person={selectedPerson}
           initialLoan={initialLoan}
-          onClose={() => setIsModalOpen(false)}
+          onClose={() => setIsLoanModalOpen(false)}
           onSubmit={handleSubmitLoan}
+        />
+      )}
+
+      {/* Modal para Lista de Pagos */}
+      {isPaymentsModalOpen && (
+        <PaymentsModal
+          person={selectedPerson}
+          onClose={() => setIsPaymentsModalOpen(false)}
+          onAddPayment={handleAddPayment}
         />
       )}
     </div>
