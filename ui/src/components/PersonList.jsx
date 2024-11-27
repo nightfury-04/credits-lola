@@ -50,20 +50,20 @@ function PersonList({ people, setPeople, onDeletePerson, showNotification }) {
   };
 
   const handleAddPayment = (payment) => {
-      setPeople((prevPeople) =>
-        prevPeople.map((person) =>
-          person.id === selectedPerson.id
-            ? {
-                ...person,
-                loan: {
-                  ...person.loan,
-                  payments: [...(person.loan?.payments || []), payment],
-                },
-              }
-            : person
-        )
-      );
-      showNotification("success", "Abono registrado correctamente.");
+    setPeople((prevPeople) =>
+      prevPeople.map((person) =>
+        person.id === selectedPerson.id
+          ? {
+              ...person,
+              loan: {
+                ...person.loan,
+                payments: [...(person.loan?.payments || []), payment],
+              },
+            }
+          : person
+      )
+    );
+    showNotification("success", "Abono registrado correctamente.");
   };
 
   return (
@@ -77,6 +77,7 @@ function PersonList({ people, setPeople, onDeletePerson, showNotification }) {
         <table className="min-w-full bg-white border border-gray-200">
           <thead>
             <tr>
+              <th className="py-2 px-4 border-b">CI</th>
               <th className="py-2 px-4 border-b">Nombre</th>
               <th className="py-2 px-4 border-b">Apellido Paterno</th>
               <th className="py-2 px-4 border-b">Apellido Materno</th>
@@ -88,6 +89,7 @@ function PersonList({ people, setPeople, onDeletePerson, showNotification }) {
           <tbody>
             {people.map((person) => (
               <tr key={person.id}>
+                <td className="py-2 px-4 border-b">{person.ci}</td>
                 <td className="py-2 px-4 border-b">{person.nombre}</td>
                 <td className="py-2 px-4 border-b">{person.apellidoPaterno}</td>
                 <td className="py-2 px-4 border-b">{person.apellidoMaterno}</td>

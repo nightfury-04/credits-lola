@@ -20,7 +20,7 @@ function PersonForm({ onAddPerson, showNotification }) {
     e.preventDefault();
     axios.post("https://localhost:7069/api/person", formData).then(() => {
       onAddPerson(formData);
-      setFormData({ nombre: "", apellidoPaterno: "", apellidoMaterno: "", telefono: "", email: "" })
+      setFormData({ ci: "", nombre: "", apellidoPaterno: "", apellidoMaterno: "", telefono: "", email: "" })
       showNotification("success", "Persona registrada correctamente.");
     }).catch((error) => {
       console.error("Error:", error);
