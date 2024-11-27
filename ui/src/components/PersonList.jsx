@@ -36,7 +36,7 @@ function PersonList({ people, setPeople, onDeletePerson, showNotification }) {
     setPeople((prevPeople) =>
       prevPeople.map((person) =>
         person.id === loanData.personId
-          ? { ...person, loans: [...person.loans, loanData] } // Actualiza o agrega el préstamo
+          ? { ...person, loans: [...(person.loans ?? []), loanData] } // Actualiza o agrega el préstamo
           : person
       )
     );
@@ -47,12 +47,12 @@ function PersonList({ people, setPeople, onDeletePerson, showNotification }) {
       prevPeople.map((person) =>
         person.id === selectedPerson.id
           ? {
-              ...person,
-              loan: {
-                ...person.loan,
-                payments: [...(person.loan?.payments || []), payment],
-              },
-            }
+            ...person,
+            loan: {
+              ...person.loan,
+              payments: [...(person.loan?.payments || []), payment],
+            },
+          }
           : person
       )
     );

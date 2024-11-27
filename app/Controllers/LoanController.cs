@@ -45,6 +45,22 @@ public class LoanController : ControllerBase
         _context.Loans.Add(loan);
         _context.SaveChanges();
 
+        var periods = new List<Period>();
+        for (int i = 1; i <= loan.MesesDelPrestamo; i++)
+        {
+            periods.Add(new Period
+            {
+                EnTiempo = false,
+                FechaDePago = null,
+                PeriodoDePago = i,
+                Monto = null,
+                Loan = loan
+            });
+        }
+
+        _context.Periods.AddRange(periods);
+        _context.SaveChanges();
+
         LoanDto loanDto = new LoanDto
         {
             Id = loan.Id,

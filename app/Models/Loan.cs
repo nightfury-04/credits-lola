@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Models;
 
@@ -33,4 +34,7 @@ public class Loan
 
     [ForeignKey("PersonId")]
     public required Person Person { get; set; }
+
+    [JsonIgnore]
+    public ICollection<Period>? Periods { get; set; }
 }

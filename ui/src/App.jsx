@@ -43,7 +43,7 @@ function App() {
             Inicio
           </Link>
           <Link
-            to="/debtor-list"
+            to="/person-list"
             className="mr-4 text-blue-500 hover:underline"
           >
             Lista de personas
